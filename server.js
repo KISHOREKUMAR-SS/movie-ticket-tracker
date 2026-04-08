@@ -75,8 +75,7 @@ cron.schedule('* * * * *', async () => {
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
       
       // Go to the Trichy BookMyShow page
-      await page.goto('https://in.bookmyshow.com/explore/movies-trichy', { waitUntil: 'networkidle2' });
-
+await page.goto('https://in.bookmyshow.com/explore/movies-trichy', { waitUntil: 'domcontentloaded', timeout: 60000 });
       // 3. Scrape the live text from the website
       const liveTextArray = await page.evaluate(() => {
           const elements = document.querySelectorAll('div.sc-7o7nez-0');
