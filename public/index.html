@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Tracker</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 100px; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; margin-top: 0; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 12px; background-color: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; margin-top: 10px; }
+        button:hover { background-color: #4f46e5; }
+        #status { margin-top: 15px; text-align: center; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🎬 Add Movie to Tracker</h2>
+        <form id="trackerForm">
+            <input type="text" id="movieTitle" placeholder="Movie Title (e.g., Dhurandhar)" required>
+            <input type="text" id="movieTheater" placeholder="Theater Name (Optional)">
+            <button type="submit">Start Tracking</button>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        document.getElementById('trackerForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            
+            const statusText = document.getElementById('status');
+            statusText.innerText = "Adding to database...";
+            statusText.style.color = "#666";
+
+            // Grab the text from the input boxes
+            const title = document.getElementById('movieTitle').value;
+            const theater = document.getElementById('movieTheater').value;
+
+            try {
+                // Send it to your specific backend API route
+                const response = await fetch('/api/movies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: title, theater: theater })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusText.innerText = "✅ " + data.message;
+                    statusText.style.color = "green";
+                    document.getElementById('trackerForm').reset(); 
+                } else {
+                    statusText.innerText = "❌ Error adding movie.";
+                    statusText.style.color = "red";
+                }
+            } catch (error) {
+                statusText.innerText = "❌ Connection error.";
+                statusText.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>
