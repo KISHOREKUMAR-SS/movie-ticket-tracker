@@ -8,12 +8,13 @@ const Movie = require('./models/Movie');
 const sendAlertEmail = require('./services/emailService');
 
 const app = express();
-// --- HOMEPAGE ROUTE ---
-app.get('/', (req, res) => {
-    res.send("🎬 Ticket Tracker Bot is live and scanning for movies!");
-});
+
 app.use(cors());
 app.use(express.json());
+
+// --- THIS SERVES YOUR FRONTEND WEBSITE ---
+// (This replaced the old text message!)
+app.use(express.static('public'));
 
 // --- DATABASE CONNECTION ---
 mongoose.connect(process.env.MONGO_URI)
@@ -41,11 +42,11 @@ app.post('/api/movies', async (req, res) => {
   try {
     const newMovie = new Movie({
       title: req.body.title,
-      theater: req.body.theater,
+      theater: req.body.theater || "Any",
       isTicketOpen: false // Always starts as false
     });
     await newMovie.save();
-    res.json(newMovie);
+    res.status(200).json({ message: "Movie successfully added to tracker!" });
   } catch (error) {
     console.error("Error adding movie:", error);
     res.status(500).json({ error: "Failed to add movie" });
