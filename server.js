@@ -8,6 +8,10 @@ const Movie = require('./models/Movie');
 const sendAlertEmail = require('./services/emailService');
 
 const app = express();
+// --- HOMEPAGE ROUTE ---
+app.get('/', (req, res) => {
+    res.send("🎬 Ticket Tracker Bot is live and scanning for movies!");
+});
 app.use(cors());
 app.use(express.json());
 
